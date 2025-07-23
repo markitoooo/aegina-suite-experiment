@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aegina Suites | Luxury Property Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #146EF5;
+            --primary-light: #3A84F5;
+            --black: #1D1D1F;
+            --white: #FFFFFF;
+            --gray: #86868B;
+            --light-gray: #F5F5F7;
+            --dark-bg: #0A0A0C;
+            --nav-bg: rgba(255, 255, 255, 0.85);
+            --text-color: var(--black);
+            --bg-color: var(--white);
+            --section-bg: var(--white);
+            --nav-glow: 0 8px 32px rgba(20, 110, 245, 0.15);
+            --transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #3A84F5;
+            --primary-light: #5A9DFF;
+            --nav-bg: rgba(10, 10, 12, 0.85);
+            --text-color: var(--white);
+            --bg-color: var(--dark-bg);
+            --section-bg: #121214;
+            --gray: #A0A0A0;
+            --light-gray: #2C2C2E;
+            --nav-glow: 0 8px 32px rgba(20, 110, 245, 0.25);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+            background: var(--bg-color);
+            color: var(--text-color);
+            transition: background 0.8s ease, color 0.5s ease;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 1.2s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
+        }
+
+        /* Loading Animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 1s ease, visibility 1s ease;
+        }
+        
+        .loader-logo {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--white);
+            margin-bottom: 2rem;
+            font-family: 'Manrope', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loader-logo span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .progress-container {
+            width: 240px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--primary);
+            transition: width 0.4s ease;
+        }
+        
+        .counter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1rem;
+            color: var(--gray);
+            font-weight: 400;
+            margin-top: 1rem;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%) scale(1);
+            transition: transform 0.15s ease;
+            mix-blend-mode: difference;
+            display: none;
+        }
+        
+        .cursor-follower {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border: 1px solid var(--primary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: all 0.3s ease-out;
+            display: none;
+        }
+
+        @media (hover: hover) {
+            .cursor, .cursor-follower {
+                display: block;
+            }
+            * {
+                cursor: none;
+            }
+        }
+
+        /* Parallax Island Background */
+        .island-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .island-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 150%;
+            height: 150%;
+            background-image: url("data:image/svg+xml,%3Csvg width='1200' height='600' viewBox='0 0 1200 600' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 300 C150 250 300 350 450 300 C600 250 750 350 900 300 C1050 250 1200 350 1200 300' stroke='%231D1D1F' stroke-width='1.5' stroke-opacity='0.08' stroke-linecap='round'/%3E%3C/svg%3E");
+            background-size: 1200px 600px;
+            background-position: center 70%;
+            background-repeat: no-repeat;
+            transform: translate(-50%, -50%);
+            transition: all 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        [data-theme="dark"] .island-bg {
+            background-image: url("data:image/svg+xml,%3Csvg width='1200' height='600' viewBox='0 0 1200 600' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 300 C150 250 300 350 450 300 C600 250 750 350 900 300 C1050 250 1200 350 1200 300' stroke='%23FFFFFF' stroke-width='1.5' stroke-opacity='0.08' stroke-linecap='round'/%3E%3C/svg%3E");
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: auto;
+            padding: 16px 36px;
+            display: flex;
+            align-items: center;
+            z-index: 100;
+            background: var(--nav-bg);
+            backdrop-filter: saturate(180%) blur(10px);
+            -webkit-backdrop-filter: saturate(180%) blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), var(--nav-glow);
+            border: 0.5px solid rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+        }
+
+        [data-theme="dark"] nav {
+            border: 0.5px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .logo {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-color);
+            text-decoration: none;
+            margin-right: 48px;
+            white-space: nowrap;
+            letter-spacing: -0.5px;
+            transition: var(--transition);
+        }
+
+        .logo span {
+            color: var(--primary);
+            transition: var(--transition);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: 0.2px;
+            position: relative;
+            padding: 8px 0;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+            position: relative;
+            width: 100%;
+            margin-top: 140px;
+            padding-top: 30px;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1.2s ease, transform 1.2s ease;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 6.5vw, 5rem);
+            font-weight: 800;
+            font-family: 'Manrope', sans-serif;
+            margin-bottom: 28px;
+            line-height: 1.05;
+            letter-spacing: -1.2px;
+            background: linear-gradient(to right, var(--text-color) 0%, var(--text-color) 50%, var(--primary) 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 8s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+            100% { background-position: 0% center; }
+        }
+
+        .hero p {
+            font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 50px;
+            line-height: 1.7;
+            font-weight: 300;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            border: 1px solid var(--primary);
+            padding: 16px 38px;
+            border-radius: 30px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-btn.primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .hero-btn.secondary {
+            background: transparent;
+            color: var(--primary);
+        }
+
+        .hero-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            z-index: -1;
+            transform: translateX(-100%);
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .hero-btn.secondary:hover {
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(20, 110, 245, 0.3);
+        }
+
+        .hero-btn.primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(20, 110, 245, 0.3);
+            background: var(--primary-light);
+        }
+
+        .hero-btn.secondary:hover::before {
+            transform: translateX(0);
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: var(--primary);
+            opacity: 0.08;
+            filter: blur(40px);
+            z-index: -1;
+        }
+
+        .floating-1 {
+            width: 400px;
+            height: 400px;
+            top: 10%;
+            left: 5%;
+            animation: float 12s infinite ease-in-out;
+        }
+
+        .floating-2 {
+            width: 300px;
+            height: 300px;
+            bottom: 15%;
+            right: 10%;
+            animation: float 10s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(180deg); }
+            100% { transform: translateY(0) rotate(360deg); }
+        }
+
+        /* Sections */
+        .section {
+            padding: 160px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            background: var(--section-bg);
+            transition: background 0.5s ease;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 70px;
+            position: relative;
+            display: inline-block;
+            font-family: 'Manrope', sans-serif;
+            letter-spacing: -1px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -20px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--primary);
+            transition: width 0.6s ease;
+        }
+
+        .section:hover .section-title::after {
+            width: 80px;
+        }
+
+        .team-members {
+            display: flex;
+            flex-direction: column;
+            gap: 70px;
+            margin-top: 50px;
+        }
+
+        .team-member {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 30px;
+            border-radius: 20px;
+            background: var(--section-bg);
+            transition: var(--transition);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .team-member::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--primary);
+            transform: translateX(-10px);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .team-member:hover::before {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .team-member h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .team-member p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            max-width: 800px;
+        }
+
+        .report-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            border: 1px solid var(--primary);
+            padding: 16px 38px;
+            border-radius: 30px;
+            transition: var(--transition);
+            margin-top: 40px;
+            position: relative;
+            overflow: hidden;
+            gap: 10px;
+        }
+
+        .report-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--primary);
+            z-index: -1;
+            transform: translateX(-100%);
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .report-btn:hover {
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(20, 110, 245, 0.3);
+        }
+
+        .report-btn:hover::before {
+            transform: translateX(0);
+        }
+
+        /* Footer */
+        footer {
+            width: 100%;
+            padding: 80px 5% 40px;
+            background: var(--section-bg);
+            text-align: center;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .footer-logo span {
+            color: var(--primary);
+        }
+
+        .copyright {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-top: 30px;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 30px;
+            background: var(--light-gray);
+            border-radius: 30px;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border: none;
+            appearance: none;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: var(--primary);
+            left: 2px;
+            top: 2px;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+
+        [data-theme="dark"] .theme-toggle::before {
+            transform: translateX(30px);
+        }
+
+        /* Language Toggle */
+        .language-toggle {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            padding: 10px 20px;
+            background: var(--light-gray);
+            color: var(--text-color);
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .language-toggle:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-5px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            body {
+                align-items: center;
+            }
+            
+            .section {
+                padding: 120px 5%;
+            }
+            
+            nav {
+                top: 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .island-bg {
+                background-size: 800px 400px;
+            }
+
+            nav {
+                width: 90%;
+                padding: 14px 20px;
+                top: 20px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .hero {
+                margin-top: 120px;
+                padding-top: 20px;
+            }
+
+            .logo {
+                margin-right: 0;
+                margin-bottom: 10px;
+                width: 100%;
+                text-align: center;
+            }
+
+            .nav-links {
+                gap: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .nav-links a {
+                font-size: 12px;
+                padding: 6px 0;
+            }
+
+            .hero h1 {
+                letter-spacing: -0.5px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .hero-btn {
+                width: 100%;
+            }
+
+            .team-members {
+                gap: 40px;
+            }
+
+            .team-member h3 {
+                font-size: 1.5rem;
+            }
+
+            .team-member p {
+                font-size: 1rem;
+            }
+
+            .language-toggle {
+                bottom: 30px;
+                left: 30px;
+                transform: none;
+                width: auto;
+            }
+
+            .theme-toggle {
+                bottom: 30px;
+                right: 30px;
+            }
+        }
+    </style>
+</head>
+<body data-theme="light">
+    <!-- Loading Animation -->
+    <div class="loader">
+        <div class="loader-logo">
+            <span>A</span><span>e</span><span>g</span><span>i</span><span>n</span><span>a</span> <span>S</span><span>u</span><span>i</span><span>t</span><span>e</span><span>s</span>
+        </div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="counter" id="counter">0%</div>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Parallax Island Background -->
+    <div class="island-container">
+        <div class="island-bg" id="islandBg"></div>
+    </div>
+
+    <!-- Floating Elements -->
+    <div class="floating-element floating-1"></div>
+    <div class="floating-element floating-2"></div>
+
+    <!-- Navigation -->
+    <nav>
+        <a href="#" class="logo">Aegina<span>Suites</span></a>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#team">Team</a>
+            <a href="#report">Earnings</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content" id="heroContent">
+            <h1>Redefining Luxury Living in the Saronic Gulf</h1>
+            <p>Currently building six exclusive suites blending minimalist design with unparalleled comfort, creating harmony between architecture and Aegina's natural beauty</p>
+            <div class="hero-buttons">
+                <a href="#about" class="hero-btn primary">Our Philosophy</a>
+                <a href="#report" class="hero-btn secondary">View Earnings</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <h2 class="section-title">Our Philosophy</h2>
+        <p>At Aegina Suites, we believe true luxury lies in the harmony of space, light, and exceptional craftsmanship. Our properties in Aegina Island represent a new standard in minimalist luxury living.</p>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team" class="section">
+        <h2 class="section-title">Leadership</h2>
+        <div class="team-members">
+            <div class="team-member">
+                <h3>Panagiotis Markidis</h3>
+                <p>Founder & CEO with a vision for creating architectural masterpieces that respect Aegina's natural beauty while delivering modern luxury.</p>
+            </div>
+            <div class="team-member">
+                <h3>Christina Economopoulou</h3>
+                <p>Co-Founder specializing in curating experiences that blend contemporary design with authentic Greek hospitality traditions.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Earnings Section -->
+    <section id="report" class="section">
+        <h2 class="section-title">Annual Report</h2>
+        <p>Download our latest financial reports and corporate documentation to learn about our growth and future developments.</p>
+        <a href="AeginaSuite_AnnualReport.pdf" class="report-btn">
+            <i class="fas fa-download"></i>
+            Download Report
+        </a>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-logo">Aegina<span>Suites</span></div>
+            <p>Luxury Property Management in the Heart of the Saronic Gulf</p>
+            <div class="copyright">© 2023 Aegina Suites. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" aria-label="Toggle theme"></button>
+    
+    <!-- Language Toggle Button -->
+    <button class="language-toggle" id="languageToggle">
+        <i class="fas fa-globe"></i>
+        Ελληνικά
+    </button>
+
+    <script>
+        // Loading Animation
+        const loader = document.querySelector('.loader');
+        const progressBar = document.getElementById('progressBar');
+        const counter = document.getElementById('counter');
+        const body = document.body;
+        const letters = document.querySelectorAll('.loader-logo span');
+        
+        // Simulate loading progress
+        let progress = 0;
+        const interval = setInterval(() => {
+            progress += Math.random() * 10;
+            if (progress >= 100) {
+                progress = 100;
+                clearInterval(interval);
+                
+                // Animate letters
+                letters.forEach((letter, index) => {
+                    setTimeout(() => {
+                        letter.style.opacity = 1;
+                        letter.style.transform = 'translateY(0)';
+                    }, index * 80);
+                });
+                
+                // Hide loader and show content
+                setTimeout(() => {
+                    loader.style.opacity = '0';
+                    loader.style.visibility = 'hidden';
+                    body.classList.add('loaded');
+                    
+                    // Show hero content
+                    const heroContent = document.getElementById('heroContent');
+                    setTimeout(() => {
+                        heroContent.style.opacity = '1';
+                        heroContent.style.transform = 'translateY(0)';
+                    }, 300);
+                    
+                    // Show sections when in view
+                    showSections();
+                }, 1000);
+            }
+            
+            progressBar.style.width = `${progress}%`;
+            counter.textContent = `${Math.floor(progress)}%`;
+        }, 100);
+
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const cursorFollower = document.querySelector('.cursor-follower');
+        
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            
+            setTimeout(() => {
+                cursorFollower.style.left = e.clientX + 'px';
+                cursorFollower.style.top = e.clientY + 'px';
+            }, 100);
+        });
+
+        // Interactive elements cursor effect
+        const interactiveElements = document.querySelectorAll('a, button, .team-member, .report-btn, .hero-btn, .theme-toggle, .language-toggle');
+        
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+                cursor.style.opacity = '0.5';
+                cursorFollower.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursor.style.opacity = '1';
+                cursorFollower.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+        });
+
+        // Parallax Effect
+        const islandBg = document.getElementById('islandBg');
+        
+        document.addEventListener('mousemove', (e) => {
+            const moveX = (e.clientX - window.innerWidth / 2) / 30;
+            const moveY = (e.clientY - window.innerHeight / 2) / 30;
+            
+            islandBg.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px))`;
+        });
+
+        // Theme Toggle
+        const themeToggle = document.querySelector('.theme-toggle');
+        const html = document.documentElement;
+
+        function setTheme(theme) {
+            html.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        });
+
+        // Initialize theme
+        if (localStorage.getItem('theme')) {
+            setTheme(localStorage.getItem('theme'));
+        }
+
+        // Language Toggle
+        const languageToggle = document.getElementById('languageToggle');
+        let currentLanguage = 'en';
+        
+        // English content
+        const englishContent = {
+            heroTitle: "Redefining Luxury Living in the Saronic Gulf",
+            heroSubtitle: "Currently building six exclusive suites blending minimalist design with unparalleled comfort, creating harmony between architecture and Aegina's natural beauty",
+            heroButton1: "Our Philosophy",
+            heroButton2: "View Earnings",
+            aboutTitle: "Our Philosophy",
+            aboutText: "At Aegina Suites, we believe true luxury lies in the harmony of space, light, and exceptional craftsmanship. Our properties in Aegina Island represent a new standard in minimalist luxury living.",
+            teamTitle: "Leadership",
+            teamMembers: [
+                {
+                    name: "Panagiotis Markidis",
+                    description: "Founder & CEO with a vision for creating architectural masterpieces that respect Aegina's natural beauty while delivering modern luxury."
+                },
+                {
+                    name: "Christina Economopoulou",
+                    description: "Co-Founder specializing in curating experiences that blend contemporary design with authentic Greek hospitality traditions."
+                }
+            ],
+            reportTitle: "Annual Report",
+            reportText: "Download our latest financial reports and corporate documentation to learn about our growth and future developments.",
+            reportButton: "Download Report",
+            navLinks: ["About", "Team", "Earnings"]
+        };
+        
+        // Greek content
+        const greekContent = {
+            heroTitle: "Αναπλάθοντας την Πολυτελή Διαβίωση στο Σαρωνικό",
+            heroSubtitle: "Αναπτύσσουμε έξι αποκλειστικές σουίτες που συνδυάζουν μινιμαλιστική αισθητική με απαράμιλλη άνεση, δημιουργώντας αρμονία μεταξύ αρχιτεκτονικής και της φυσικής ομορφιάς της Αίγινας",
+            heroButton1: "Η Φιλοσοφία μας",
+            heroButton2: "Οικονομικά Αποτελέσματα",
+            aboutTitle: "Η Φιλοσοφία μας",
+            aboutText: "Στην Aegina Suites, η αληθινή πολυτέλεια ορίζεται μέσα από την αρμονία του χώρου, του φωτός και της άριστης κατασκευής. Οι ιδιότητές μας στην Αίγινα θέτουν ένα νέο πρότυπο μινιμαλιστικής πολυτελούς διαβίωσης.",
+            teamTitle: "Η Ομάδα Διοίκησης",
+            teamMembers: [
+                {
+                    name: "Παναγιώτης Μαρκίδης",
+                    description: "Ιδρυτής και Διευθύνων Σύμβουλος με ένα όραμα για αρχιτεκτονικά αριστουργήματα που σεβόνται τη φυσική ομορφιά της Αίγινας προσφέροντας ταυτόχρονα σύγχρονη πολυτέλεια."
+                },
+                {
+                    name: "Χριστίνα Οικονομοπούλου",
+                    description: "Συνιδρύτρια με ειδίκευση στη δημιουργία εμπειριών που συνδυάζουν σύγχρονο σχεδιασμό με την αυθεντική ελληνική παράδοση της φιλοξενίας."
+                }
+            ],
+            reportTitle: "Ετήσια Έκθεση",
+            reportText: "Κατεβάστε τις τελευταίες οικονομικές μας εκθέσεις και εταιρική τεκμηρίωση για να ενημερωθείτε σχετικά με την ανάπτυξη και τις μελλοντικές εξελίξεις μας.",
+            reportButton: "Λήψη Αναφοράς",
+            navLinks: ["Σχετικά", "Η Ομάδα", "Οικονομικά"]
+        };
+        
+        function updateContent(lang) {
+            const content = lang === 'en' ? englishContent : greekContent;
+            
+            document.querySelector('.hero h1').textContent = content.heroTitle;
+            document.querySelector('.hero p').textContent = content.heroSubtitle;
+            document.querySelectorAll('.hero-btn')[0].textContent = content.heroButton1;
+            document.querySelectorAll('.hero-btn')[1].textContent = content.heroButton2;
+            
+            document.querySelector('#about .section-title').textContent = content.aboutTitle;
+            document.querySelector('#about p').textContent = content.aboutText;
+            
+            document.querySelector('#team .section-title').textContent = content.teamTitle;
+            const teamMembers = document.querySelectorAll('.team-member');
+            teamMembers.forEach((member, index) => {
+                member.querySelector('h3').textContent = content.teamMembers[index].name;
+                member.querySelector('p').textContent = content.teamMembers[index].description;
+            });
+            
+            document.querySelector('#report .section-title').textContent = content.reportTitle;
+            document.querySelector('#report p').textContent = content.reportText;
+            document.querySelector('.report-btn').innerHTML = `<i class="fas fa-download"></i> ${content.reportButton}`;
+            
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach((link, index) => {
+                link.textContent = content.navLinks[index];
+            });
+            
+            languageToggle.innerHTML = lang === 'en' 
+                ? '<i class="fas fa-globe"></i> Ελληνικά' 
+                : '<i class="fas fa-globe"></i> English';
+        }
+        
+        languageToggle.addEventListener('click', () => {
+            currentLanguage = currentLanguage === 'en' ? 'el' : 'en';
+            updateContent(currentLanguage);
+            localStorage.setItem('language', currentLanguage);
+        });
+        
+        // Initialize language
+        if (localStorage.getItem('language')) {
+            currentLanguage = localStorage.getItem('language');
+            updateContent(currentLanguage);
+        }
+
+        // Show sections when in viewport
+        function showSections() {
+            const sections = document.querySelectorAll('.section');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', () => {
+            showSections();
+        });
+    </script>
+</body>
+</html>
